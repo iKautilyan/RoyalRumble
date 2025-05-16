@@ -5,12 +5,15 @@ public class Bullet : MonoBehaviour
 {
     public float bulletSpeed = 0f;
 
+    public int damageByBullet = 0;
+
     public float bulletLifeTime = 0f;
 
     private bool bulletImpact = false;
 
-    public void FireBullet(float speed, float range)
+    public void FireBullet(float speed, float range, int damage = 25)
     {
+        damageByBullet = damage;
         bulletSpeed = speed;
         bulletLifeTime = range / speed;
         StartCoroutine(ProjectileMotion());
@@ -19,21 +22,22 @@ public class Bullet : MonoBehaviour
     IEnumerator ProjectileMotion()
     {
         float timeElapsed = 0f;
-        while(timeElapsed < bulletLifeTime || !bulletImpact)
+
+        Rigidbody rb = GetComponent<Rigidbody>();
+        rb.linearVelocity = transform.forward * bulletSpeed;
+        while (timeElapsed < bulletLifeTime && !bulletImpact)
         {
-            transform.position += transform.forward.normalized * bulletSpeed * Time.deltaTime;
             timeElapsed += Time.deltaTime;
             yield return new WaitForFixedUpdate();
         }
-
         Destroy(gameObject);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if(other.CompareTag("hitBox"))
+        if (collision.gameObject.CompareTag("hitBox"))
         {
-            //other.transform.parent
+            collision.gameObject.GetComponent<Character>().DamageToCharacter(damageByBullet);
         }
         bulletImpact = true;
     }

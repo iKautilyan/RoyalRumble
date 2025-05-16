@@ -11,6 +11,8 @@ public class WeaponController : MonoBehaviour
 
     public float range, speed;
 
+    public int damageByWeapon = 25;
+
     public float fireRate = 0f;
 
     public bool loaded = true;
@@ -21,7 +23,12 @@ public class WeaponController : MonoBehaviour
             OnTriggerPulled();
     }
 
-    public void OnTriggerPulled()
+    public void PullTrigger()
+    {
+        OnTriggerPulled();
+    }
+
+    private void OnTriggerPulled()
     {
         if(loaded)
         {
@@ -33,7 +40,7 @@ public class WeaponController : MonoBehaviour
     {
         loaded = false;
         Bullet bullet = Instantiate(bulletPrefab, bulletInstantiatePoint.position, bulletInstantiatePoint.rotation).GetComponent<Bullet>();
-        bullet.FireBullet(speed, range);
+        bullet.FireBullet(speed, range, damageByWeapon);
         yield return new WaitForSeconds(fireRate);
         loaded = true;
     }

@@ -3,14 +3,11 @@ using UnityEngine;
 public class StateMachine:MonoBehaviour
 {
     public State CurrentState { get; private set; }
-    public MoveToState moveToState;
     private Character character => GetComponent<Character>();
 
     public void Initialize(/*State startState*/)
-    {
-        moveToState = new MoveToState();
-        character.SetDestination(Vector3.forward * 9f);
-        ChangeState(moveToState);
+    {      
+        ChangeState(new MoveToState());
     }
 
     public void ChangeState(State newState)
@@ -21,6 +18,7 @@ public class StateMachine:MonoBehaviour
         {
             CurrentState.stateMachine = this;
             CurrentState.character = character;
+            CurrentState.character.activeState = CurrentState.ToString();
             CurrentState.StateEnter();
         }
     }
